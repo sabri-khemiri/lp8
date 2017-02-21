@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <!-- Page title -->
+        <title>{% block title %}YSondage{% endblock %}</title>
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <!--<link rel="shortcut icon" type="image/ico" href="favicon.ico') }}" />-->
+
+        <!-- Vendor styles -->
+        <link rel="stylesheet" href="{{ asset('bundles/company/vendor/fontawesome/css/font-awesome.css') }}" />
+        <link rel="stylesheet" href="{{ asset('bundles/company/vendor/metisMenu/dist/metisMenu.css') }}" />
+        <link rel="stylesheet" href="{{ asset('bundles/company/vendor/animate.css/animate.css') }}" />
+        <link rel="stylesheet" href="{{ asset('bundles/company/vendor/bootstrap/dist/css/bootstrap.css') }}" />
+
+        <!-- App styles -->
+        <link rel="stylesheet" href="{{ asset('bundles/company/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css') }}" />
+        <link rel="stylesheet" href="{{ asset('bundles/company/fonts/pe-icon-7-stroke/css/helper.css') }}" />
+        <link rel="stylesheet" href="{{ asset('bundles/company/styles/style.css') }}" />
+
+        <link rel="stylesheet" href="{{ asset('bundles/company/vendor/bootstrap-star-rating/css/star-rating.css') }}" />
+
+        <!-- Page styles -->
+        <style>
+            .rating-container .rating-stars:before {
+                text-shadow: none;
+            }
+        </style>
+
+    </head>
+
+    <body class="blank">
+        <div class="color-line"></div>
+
+    <div class="row margin-top-20">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="hpanel">
+                <div class="panel-body">
+                    <h2>Proposition :  {{survey.title|capitalize}} <span class="tooltip-demo"><i class="fa fa-info-circle small" data-toggle="tooltip" data-placement="right" title="{{survey.annotation|striptags}}"></i></span></h2>
+                </div>
+            </div>
+        </div>      
+    </div>
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="hpanel">
+                <div class="panel-body">
+                    {% for key, size in ranks %}
+                        <div class="row">
+                            <div class="col-lg-2">
+                                <span class="font-extra-bold text-big text-warning">{{ loop.index }}<i class="fa fa-trophy"></i></span>
+                            </div>
+                            <div class="col-lg-3">
+                                <img class="img-responsive" src="{{ asset('bundles/company/uploads/propositions/' ~ propositions[key].id ~ '.' ~ propositions[key].image) }}" />
+                            </div>
+                            <div class="col-lg-7">
+                                <h2>{{propositions[key].title|capitalize}}</h2>
+                                <p>{{propositions[key].description|capitalize}}</p>
+                                <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#myModal"><i class="fa fa-shopping-basket"></i> Sélectionner</button>
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="color-line"></div>
+                                            <div class="modal-header text-center">
+                                                <h5 class="modal-title">Vous allez choisir la proposition <br/> {{propositions[key].title}}</h5>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" class="form-horizontal" action="{{ path('customer_survey_proposition_select', {'idSurvey': survey.id, 'idProposition' : propositions[key].id}) }}}}">
+                                                    <label>Un message, une remarque en plus???</label><br/>
+                                                    <textarea class="col-lg-12 m-b-md" name="message"></textarea><br/>
+                                                    <input class="btn btn-success" type="submit" value="Envoyer" />
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </div>
+                            </div>
+                        </div>
+                        <hr/>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+                
+    <div class="row {{rating != false? 'hide' : ''}}">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="hpanel">
+                <div class="panel-body text-center">
+                    <h1>Donnez votre avis!</h1>
+                    <form  action="{{ path('customer_survey_rating', {'idSurvey': survey.id}) }}" method="post">
+                        <span><input id="input-1" class="rating" data-min="0" data-max="5" data-step="1" data-size="lg" name="rating"  data-show-clear="false"></span>
+                        <button type="submit" class="btn btn-success">Votez</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+     <div class="row {{rating == false? 'hide' : ''}}">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="hpanel">
+                <div class="panel-body text-center text-warning">
+                    <h1>Merci de votre vote</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+            
+                
+    
+   
+
+
+        <!-- Vendor scripts -->
+        <script src="{{ asset('bundles/company/vendor/jquery/dist/jquery.min.js') }}"></script>
+        <script src="{{ asset('bundles/company/vendor/jquery-ui/jquery-ui.min.js') }}"></script>
+        <script src="{{ asset('bundles/company/vendor/slimScroll/jquery.slimscroll.min.js') }}"></script>
+        <script src="{{ asset('bundles/company/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('bundles/company/vendor/jquery-flot/jquery.flot.js') }}"></script>
+        <script src="{{ asset('bundles/company/vendor/jquery-flot/jquery.flot.resize.js') }}"></script>
+        <script src="{{ asset('bundles/company/vendor/jquery-flot/jquery.flot.pie.js') }}"></script>
+        <script src="{{ asset('bundles/company/vendor/flot.curvedlines/curvedLines.js') }}"></script>
+        <script src="{{ asset('bundles/company/vendor/jquery.flot.spline/index.js') }}"></script>
+        <script src="{{ asset('bundles/company/vendor/metisMenu/dist/metisMenu.min.js') }}"></script>
+        <script src="{{ asset('bundles/company/vendor/iCheck/icheck.min.js') }}"></script>
+        <script src="{{ asset('bundles/company/vendor/peity/jquery.peity.min.js') }}"></script>
+        <script src="{{ asset('bundles/company/vendor/sparkline/index.js') }}"></script>
+
+        <!-- App scripts -->
+        <script src="{{ asset('bundles/company/scripts/charts.js') }}"></script>
+        <script src="{{ asset('bundles/company/scripts/homer.js') }}"></script>
+        
+        <script src="{{ asset('bundles/company/vendor/bootstrap-star-rating/js/star-rating.min.js') }}"></script>
+
+
+        <script>
+            $(function () {
+                $("#input-1").rating('refresh', {showCaption: false});
+            });
+        </script>
+
+    </body>
+</html>

@@ -1,0 +1,169 @@
+{% extends "CompanyBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Index{% endblock %}
+{% block css %}
+{% endblock %}
+{% block js %}
+    {# src/OC/PlatformBundle/Resources/views/Advert/form.html.twig #}
+
+    {# Le formulaire reste inchangé #}
+
+
+    {# On charge la bibliothèque jQuery. Ici, je la prends depuis le CDN google
+       mais si vous l'avez en local, changez simplement l'adresse. #}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    {# Voici le script en question : #}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // On récupère la balise <div> en question qui contient l'attribut « data-prototype » qui nous intéresse.
+            var $container = $('div#propositions');
+            var $menu = $('ul#add-menu');
+
+            // On ajoute un lien pour ajouter une nouvelle catégorie
+            var $addLink = $('<button href="#" class="btn btn-info btn-block">Ajouter une proposition</button>');
+            $menu.prepend($addLink);
+
+
+            // On ajoute un nouveau champ à chaque clic sur le lien d'ajout.
+            $addLink.click(function (e) {
+                addMenu($menu, $container);
+                e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+                return false;
+            });
+
+            // On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
+            var index = $container.find(':input').length;
+
+            // On ajoute un premier champ automatiquement s'il n'en existe pas déjà un (cas d'une nouvelle annonce par exemple).
+            if (index == 0) {
+                addMenu($menu, $container);
+            } else {
+                // Pour chaque catégorie déjà existante, on ajoute un lien de suppression
+                $container.children('div').each(function () {
+                    addDeleteLink($(this));
+                });
+            }
+
+            function addMenu($menu, $container) {
+                // Dans le contenu de l'attribut « data-prototype », on remplace :
+                // - le texte "__name__label__" qu'il contient par le label du champ
+                // - le texte "__name__" qu'il contient par le numéro du champ
+                var $prototype = $($menu.attr('data-prototype').replace(/__index__/g, +(index + 1)).replace(/__name__/g, +(index + 1)).replace(/__active__/g, +(index == 0) ? "active" : ""));
+
+
+
+
+
+                // On ajoute le prototype modifié à la fin de la balise <div>
+                $menu.append($prototype);
+                addCategory($container, $prototype)
+
+            }
+
+            // La fonction qui ajoute un formulaire Categorie
+            function addCategory($container, $p) {
+                // Dans le contenu de l'attribut « data-prototype », on remplace :
+                // - le texte "__name__label__" qu'il contient par le label du champ
+                // - le texte "__name__" qu'il contient par le numéro du champ
+                var $prototype = $($container.attr('data-prototype').replace(/__index__/g, +(index + 1)).replace(/__name__/g, +(index + 1)).replace(/__active__/g, +(index == 0) ? "active" : ""));
+
+                // On ajoute au prototype un lien pour pouvoir supprimer la catégorie
+                addDeleteLink($prototype, $p);
+
+                // On ajoute le prototype modifié à la fin de la balise <div>
+                $container.append($prototype);
+
+                // Enfin, on incrémente le compteur pour que le prochain ajout se fasse avec un autre numéro
+                index++;
+            }
+
+
+
+            // La fonction qui ajoute un lien de suppression d'une catégorie
+            function addDeleteLink($prototype, $p) {
+                // Création du lien
+                $deleteLink = $('<button href="#" class="btn btn-danger btn-block">Supprimer</button>');
+
+                // Ajout du lien
+                $prototype.append($deleteLink);
+                console.log($prototype);
+
+                // Ajout du listener sur le clic du lien
+                $deleteLink.click(function (e) {
+                    $prototype.remove();
+                    $p.remove();
+                    e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+                    return false;
+                });
+            }
+        });
+    </script>
+
+{% endblock %}
+{% block body %}
+
+    <div class="small-header transition animated fadeIn">
+        <div class="hpanel">
+            <div class="panel-body">
+                <h2 class="font-light m-b-xs">
+                    Ajout des Propositions
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="content ">
+        <div class="panel-body">
+            <div class="col-lg-12">
+                <div class="hpanel">
+
+                    <div class="tabs-top">
+                        <ul id="add-menu"
+                            data-prototype="<li class='__active__'><a data-toggle='tab' href='#tab-__index__'>#__index__</a></li>" class="nav nav-tabs">
+                        </ul>
+                        {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+                        <div class="tab-content" id="propositions"
+                             data-prototype = '
+                             <div id="tab-__index__" class="tab-pane __active__">
+                             <div class="panel-body">                     
+
+                             <div class="form-group">
+                             <label class="col-lg-2 control-label">{{ form_label(form.propositions.vars.prototype.title)|e('html_attr') }}</label>
+                             <div class="col-lg-10">
+                             {{ form_widget(form.propositions.vars.prototype.title|e('html_attr'), {'attr': {'class': 'form-control'}}) }}
+                             <span class="help-block m-b-none">{{ form_errors(form.propositions.vars.prototype.title)|e('html_attr') }}</span>
+                             </div>
+
+                             <label class="col-lg-2 control-label">{{ form_label(form.propositions.vars.prototype.description)|e('html_attr') }}</label>
+                             <div class="col-lg-10">
+                             {{ form_widget(form.propositions.vars.prototype.description|e('html_attr'), {'attr': {'class': 'form-control'}}) }}
+                             <span class="help-block m-b-none">{{ form_errors(form.propositions.vars.prototype.description)|e('html_attr') }}</span>
+                             </div>
+
+                             <label class="col-lg-2 control-label">{{ form_label(form.propositions.vars.prototype.image)|e('html_attr') }}</label>
+                             <div class="col-lg-10">
+                             {{ form_widget(form.propositions.vars.prototype.image|e('html_attr'), {'attr': {'class': 'form-control'}}) }}
+                             <span class="help-block m-b-none">{{ form_errors(form.propositions.vars.prototype.image)|e('html_attr') }}</span>
+                             </div>                
+
+                             </div>     
+                             </div>
+                             </div>
+                             '>
+                        </div>
+                             
+
+                        <br />
+                        <button class='btn-lg btn-block btn-success top20' type='submit'>Valider</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+
+{% endblock %}
+
+

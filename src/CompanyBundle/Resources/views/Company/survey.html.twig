@@ -1,0 +1,426 @@
+{% extends "CompanyBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - {{survey.title}}{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ asset('bundles/company/vendor/bootstrap-star-rating/css/star-rating.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/company/vendor/fooTable/css/footable.core.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/company/vendor/sweetalert/lib/sweet-alert.css') }}" />
+
+    <style>.rating-container .rating-stars:before {text-shadow: none;}</style>
+
+{% endblock %}
+{% block js %}
+    <script src="{{ asset('bundles/company/vendor/fooTable/dist/footable.all.min.js') }}"></script>
+    <script src="{{ asset('bundles/company/vendor/bootstrap-star-rating/js/star-rating.min.js') }}"></script>
+    
+    <script src="{{ asset('bundles/company/vendor/sweetalert/lib/sweet-alert.min.js') }}"></script>
+
+    <script>
+        $(function () {
+            // initialize with defaults
+            var ratingValue = $('.rating').rating('refresh', {
+                readonly: true,
+                showClear: true,
+                showCaption: false
+            }).val();
+        });
+    </script>
+    <script>
+        $(function () {
+            // Initialize Example 1
+            $('.footable').footable();
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".matchForm").submit(function () {
+                $.ajax({type: "POST", data: $(this).serialize(), url: "{{path('company_survey_match_update')}}",
+                    success: function (data) {
+                        $("#post").html(data);
+                    },
+                    error: function () {
+                        $("#post").html('Une erreur est survenue.');
+                    }
+                });
+                $("#match" + $(this)[0][0]["value"] + "v").text($(this)[0][1]["value"])
+                return false;
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".answerForm").submit(function () {
+                $.ajax({type: "POST", data: $(this).serialize(), url: "{{path('company_survey_answer_update')}}",
+                    success: function (data) {
+                        $("#post").html(data);
+                    },
+                    error: function () {
+                        $("#post").html('Une erreur est survenue.');
+                    }
+                });
+                $("#answer" + $(this)[0][0]["value"] + "wv").text($(this)[0][1]["value"])
+                $("#answer" + $(this)[0][0]["value"] + "av").text($(this)[0][2]["value"])
+                return false;
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".questionForm").submit(function () {
+                $.ajax({type: "POST", data: $(this).serialize(), url: "{{path('company_survey_question_update')}}",
+                    success: function (data) {
+                        $("#post").html(data);
+                    },
+                    error: function () {
+                        $("#post").html('Une erreur est survenue.');
+                    }
+                });
+                $(".question" + $(this)[0][0]["value"] + "wv").text($(this)[0][1]["value"])
+                $("#question" + $(this)[0][0]["value"] + "av").text($(this)[0][2]["value"])
+                return false;
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="small-header transition animated fadeIn">
+        <div class="hpanel">
+            <div class="panel-body">
+                <div id="hbreadcrumb" class="pull-right">
+                    <ol class="hbreadcrumb breadcrumb">
+                        <li><a href="{{path("company_homepage")}}">Accueil</a></li>
+                        <li><a href="{{path("company_homepage")}}">Mes Questionnaires </a></li>
+                        <li class="active">
+                            <span>Questionnaire</span>
+                        </li>
+                    </ol>
+                </div>
+                <h2 class="font-light m-b-xs">
+                    Questionnaire
+                </h2>
+                <small>Page de gestion du questionnaire</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="content animated">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="hpanel">
+                    <div class="panel-heading hbuilt">
+                        <div class="panel-tools">
+                            <a class="showhide"><i class="fa fa-chevron-up"></i></a>
+                        </div>
+                        Titre et description
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="row">
+                                <span class="col-md-2 font-extra-bold">Titre  </span>
+                                <span class="col-md-10">{{ survey.title|capitalize  }}</span>
+                                <span class="col-md-2 font-extra-bold">Lien  </span>
+                                <span class="col-md-10"><a href="{{ path('customer_survey_login', {'idSurvey': survey.id})}}"><span class="text-bold text-warning "><i class="fa fa-eye"></i> {{ app.request.schemeAndHttpHost }}/{{ path('customer_survey_login', {'idSurvey': survey.id})}}</span></a></span>
+                                <label class="col-md-12">Description   </label>
+                                <div class="col-md-12">   
+                                    <button class="btn btn-info btn-small btn-block col-md-6" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                        Afficher/Cacher la description
+                                    </button>
+                                    <div class="collapse in" id="collapseExample">
+                                        <div class="well well-lg">
+                                            {{ survey.annotation|raw  }}
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer no-padding">
+                        <a  href="{{ path('company_survey_update', {'id': survey.id}) }}">
+                            <button  type="button" class="btn btn-block btn-warning "><i class="fa fa-paste"></i> Modifier</button>
+                        </a>
+                        <a href="{{ path('company_survey_delete', {'idSurvey': survey.id}) }}">
+                            <button  type="button" class="btn btn-block btn-danger2"><i class="fa fa-trash"></i> Supprimer</button>
+                        </a>                            
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="hpanel">
+                    <div class="panel-heading hbuilt">
+                        <div class="panel-tools">
+                            <a class="showhide"><i class="fa fa-chevron-up"></i></a>
+                        </div>
+                        Informations et Etat
+                    </div>
+                    <div class="panel-body">
+                        <table cellpadding="1" cellspacing="1" class="table text-center">
+                            <tr>
+                                <td class="tex">Etat</td>
+                                <td class="row">
+                                    <span class="progress m-t-xs full progress-striped active">
+                                        {% if survey.status < 4 %}
+                                            <div style="width: 75%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="50" role="progressbar" class=" progress-bar progress-bar-warning">
+                                                En construction
+                                            </div>
+                                        {% elseif survey.status == 4 %}
+                                                <div style="width: 75%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" role="progressbar" class=" progress-bar progress-bar-success">
+                                                    En Cours
+                                                </div>
+                                        {% elseif survey.status == 5 %}
+                                                <div style="width: 75%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" role="progressbar" class=" progress-bar progress-bar-info">
+                                                    En Pause
+                                                </div>
+                                        {% elseif survey.status == 6 %}
+                                                <div style="width: 75%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" role="progressbar" class=" progress-bar progress-bar-danger">
+                                                    Clôt
+                                                </div>
+                                        {% endif %}
+                                    </span>
+                                    {% if survey.status > 3 %}
+                                        <div class="btn-group">
+                                            <button data-toggle="dropdown" class="btn btn-warning btn-xs dropdown-toggle" type="button"><i class="fa fa-edit"></i></button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="{{ path('company_survey_update_status', {'idSurvey': survey.id, 'status' : "Running"}) }}" class="{{ (survey.status < 3 or survey.status == 4) ? 'hide' : '' }}">En cours</a></li>
+                                                <li><a href="{{ path('company_survey_update_status', {'idSurvey': survey.id, 'status' : "Pause"}) }}" class="{{ (survey.status < 3 or survey.status == 5) ? 'hide' : '' }}">En pause</a></li>
+                                                <li><a href="{{ path('company_survey_update_status', {'idSurvey': survey.id, 'status' : "Close"}) }}" class="{{ (survey.status < 3 or survey.status == 6) ? 'hide' : '' }}">Clôtuer</a></li>
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">Sondées</td>
+                                <td>{{survey.surveyedNumber}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">Rating</td>
+                                <td><input  class="rating " data-min="0" data-max="5" data-step="0.5" value="{{survey.rating}}" data-size="xs" data-show-clear="false" disable style="pointer-events: none;cursor: default;" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-block btn-primary" data-toggle="modal" data-target="#ModalInvitation"><i class="fa fa-send"></i> Envoyer invitation</button>
+                <div class="modal fade hmodal-warning" id="ModalInvitation" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="color-line"></div>
+                            <div class="modal-header text-center">
+                             <h4 id="" class="modal-title">Envoyer une invitation </h4>
+                            </div>
+                            <div class="modal-body">
+                                <form methode="GET" action="{{path('company_survey_send_invitation', {'id':survey.id})}}" class="form-horizontal">
+                                    <input type="hidden" name="idSurvey" value="{{survey.id}}" />
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">Email</label>
+                                        <span class="col-md-10"><input class="form-control" type="text" name="email" required="required"/></span>
+                                    </div>
+                                    <span class="col-md-6"><button class="btn btn-warning btn-block" type="submit">Emvoyer</button></span>
+                                </form>
+                                <span class="col-md-6"><button class="btn btn-primary btn-block" data-dismiss="modal">Annuler</button></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="hpanel">
+                    <div class="panel-heading hbuilt">
+                        <div class="panel-tools">
+                            <a class="showhide"><i class="fa fa-chevron-up"></i></a>
+                        </div>
+                        Proposition
+                    </div>
+                    <div class="panel-body no-padding">
+                        <div class="panel-group no-padding" id="accordion" role="tablist" aria-multiselectable="true">
+                            {% for proposition in propositions %}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="hp{{proposition.id}}">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#cp{{proposition.id}}" aria-expanded="true" aria-controls="cp{{proposition.id}}">
+                                                {{proposition.title|capitalize}}
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="cp{{proposition.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="hp{{proposition.id}}">
+                                        <div class="panel-body">
+                                            <div class="col-md-4">
+                                                <img class="img-responsive" src="{{ asset('bundles/company/uploads/propositions/' ~ proposition.id ~ '.' ~ proposition.image) }}" />
+                                                <a href="{{ path('company_survey_proposition_update', {'idSurvey': proposition.survey.id, 'idProposition': proposition.id}) }}">
+                                                    <button  type="button" class="btn btn-block btn-warning "><i class="fa fa-paste"></i> Modifier</button>
+                                                </a>
+                                                <a href="{{ path('company_survey_proposition_delete', {'idSurvey': proposition.survey.id, 'idProposition': proposition.id}) }}">
+                                                    <button  type="button" class="btn btn-block btn-danger2"><i class="fa fa-trash"></i> Supprimer</button>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h2>{{proposition.title|capitalize}}</h2>
+                                                <h4>{{proposition.selected}} fois sélectionné</h4>
+                                                <p>{{proposition.description}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <a href="{{ path('company_survey_proposition_add', {'id': survey.id}) }}">
+                            <button  type="button" class="btn btn-block btn-info "><i class="fa fa-plus"></i> Ajouter Proposition</button>
+                        </a>
+                    </div>
+                </div>
+            </div>  
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="hpanel">
+                    <div class="panel-heading hbuilt">
+                        <div class="panel-tools">
+                            <a class="showhide"><i class="fa fa-chevron-up"></i></a>
+                        </div>
+                        Question
+                    </div>
+                    <div class="panel-body no-padding">
+                        <div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
+                            {% for question in questions %}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="h{{question.id}}">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion2" href="#c{{question.id}}" aria-expanded="true" aria-controls="c{{question.id}}" class="question{{question.id}}wv">
+                                                {{question.wording}}
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="c{{question.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h{{question.id}}">
+                                        <div class="panel-body">
+                                            <a><span class="text-warning pull-right" data-toggle="modal" data-target="#Question{{question.id}}"><i class="fa fa-edit"></i>Modifier</span></a><br/>
+                                            <a href="{{ path('company_survey_question_delete', {'idSurvey': survey.id, 'idQuestion': question.id}) }}"><span class="text-danger pull-right"><i class="fa fa-trash"></i>Supprimer</span></a>
+                                            <h2 class="question{{question.id}}wv">{{question.wording}}</h2>
+                                            <p id="question{{question.id}}av">Annotation : {{question.annotation}}</p>
+                                            <div class="modal fade hmodal-warning" id="Question{{question.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="color-line"></div>
+                                                        <div class="modal-header text-center">
+                                                            <h4 id="" class="modal-title">Modification question </h4>
+                                                            <small class="font-bold">Question : {{question.wording|capitalize}}</small>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form methode="POST" class="questionForm form-horizontal">
+                                                                <input type="hidden" name="id" value="{{question.id}}" />
+                                                                <div class="form-group">
+                                                                    <label class="col-md-2 control-label">Titre</label>
+                                                                    <span class="col-md-10"><input class="form-control" type="text" name="wording" value="{{question.wording|capitalize}}" required="required"/></span>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-2 control-label">Annotation</label>
+                                                                    <span class="col-md-10"><input class="form-control" type="text" name="annotation" value="{{question.annotation|capitalize}}"  /></span>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-2 control-label">Ordre</label>
+                                                                    <span class="col-md-10"><input class="form-control" type="number" name="order" value="{{question.order}}"  /></span>
+                                                                </div>
+                                                                <span class="col-md-6"><button class="btn btn-warning btn-block" type="submit">Modifier</button></span>
+                                                            </form>
+                                                            <span class="col-md-6"><button class="btn btn-primary btn-block" data-dismiss="modal">Annuler</button></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            {% for answer in question.answers %}
+                                                <span class="col-md-11">
+                                                    <a><span class="text-warning pull-right" data-toggle="modal"  data-target="#Answer{{answer.id}}"><i class="fa fa-edit"></i>Modifier</span></a><br/>
+                                                    <a href="{{ path('company_survey_answer_delete', {'idSurvey': survey.id, 'idAnswer': answer.id}) }}"><span class="text-danger pull-right"><i class="fa fa-trash"></i>Supprimer</span></a>
+                                                    <h5 id="answer{{answer.id}}wv">{{answer.wording}}</h5> 
+                                                    <p id="answer{{answer.id}}av">{{answer.annotation}}</p>
+                                                </span>
+                                                <div class="modal fade hmodal-warning" id="Answer{{answer.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="color-line"></div>
+                                                            <div class="modal-header text-center">
+                                                                <h4 id="" class="modal-title">Modification réponse </h4>
+                                                                <small class="font-bold">Réponse : {{answer.wording|capitalize}}</small>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form methode="POST" class="answerForm form-horizontal">
+                                                                    <input type="hidden" name="id" value="{{answer.id}}" />
+                                                                    <div class="form-group">
+                                                                        <label class="col-md-2 control-label">Titre</label>
+                                                                        <span class="col-md-10"><input class="form-control" type="text" name="wording" value="{{answer.wording|capitalize}}" required="required"/></span>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label class="col-md-2 control-label">Annotation</label>
+                                                                        <span class="col-md-10"><input class="form-control" type="text" name="annotation" value="{{answer.annotation|capitalize}}"  /></span>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label class="col-md-2 control-label">Ordre</label>
+                                                                        <span class="col-md-10"><input class="form-control" type="number" name="order" value="{{answer.order}}"  /></span>
+                                                                     </div>
+                                                                    <span class="col-md-6"><button class="btn btn-warning btn-block" type="submit">Modifier</button></span>
+                                                                </form>
+                                                                <span class="col-md-6"><button class="btn btn-primary btn-block" data-dismiss="modal">Annuler</button></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row projects">
+                                                    <table id="" class="footable table table-bordered table-hover" >
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Titre</th>
+                                                                <th>Poids</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for match in answer.matchs %}
+                                                                <tr>
+                                                                    <td class="col-md-6">{{match.proposition.title|capitalize}}</td>
+                                                                    <td>
+                                                                        <span id="match{{match.id}}v">{{match.weight}}</span>/10 
+                                                                        <a><span class="text-warning pull-right"  data-toggle="modal" data-target="#Modal{{match.id}}"><i class="fa fa-edit"></i>Modifier</span></a>
+                                                                    </td>
+                                                                </tr>
+                                                            <div class="modal fade hmodal-warning" id="Modal{{match.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="color-line"></div>
+                                                                        <div class="modal-header text-center">
+                                                                         <h4 id="" class="modal-title">Modification valeur </h4>
+                                                                         <small class="font-bold">{{match.proposition.title|capitalize}}</small>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <form methode="POST" class="matchForm form-horizontal">
+                                                                                <input type="hidden" name="id" value="{{match.id}}" />
+                                                                                <label class="control-label">Valeur</label>
+                                                                                <input type="range" name="weight" value="{{match.weight}}" max="10" min="0" /><br/>
+                                                                                <span class="col-md-6"><button class="btn btn-warning btn-block" type="submit">Modifier</button></span>
+                                                                            </form>
+                                                                            <span class="col-md-6"><button class="btn btn-primary btn-block" data-dismiss="modal">Annuler</button></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}   
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <hr/>
+                                            {% endfor %}                            
+                                        </div>
+                                        <a href="{{ path('company_survey_answer_add', {'idSurvey': survey.id, 'idQuestion' : question.id}) }} "><button  type="button" class="btn btn-block btn-info "><i class="fa fa-plus"></i> Ajouter réponse</button></a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <a href="{{ path('company_survey_question_add', {'id': survey.id}) }}"><button  type="button" class="btn btn-block btn-info "><i class="fa fa-plus"></i> Ajouter Question</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

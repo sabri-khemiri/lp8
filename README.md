@@ -1,0 +1,3 @@
+Contexte : Dans l’université (ou dans les grosses entreprises), l’achat du matériel informatique de bureautique se fait via des marchés dans lesquels il est possible de personnaliser la configuration (avec des centaines d’options).Souvent des utilisateurs inexpérimentés passent des heures dans les options et finissent par choisir une configuration qui ne correspond pas à leur besoin.
+
+Objectif : Mettre en place un site web qui fournit deux interfaces : utilisateur, administrateur. La première partie pose des questions en tiroir sur le besoin de l’utilisateur et finit par fournir une configuration « type » pour le besoin. La deuxième partie permet à des administrateurs de faire la correspondance entre les réponses et la configuration et de créer l’arbre de questions.

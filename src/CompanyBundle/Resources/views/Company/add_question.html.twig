@@ -1,0 +1,174 @@
+{% extends "CompanyBundle::layout.html.twig" %}
+{% set nbMatch = 0 %}
+{% block title %}{{ parent() }} - Index{% endblock %}
+{% block css %}
+{% endblock %}
+{% block js %}
+    {# src/OC/PlatformBundle/Resources/views/Advert/form.html.twig #}
+
+    {# Le formulaire reste inchangé #}
+
+
+    {# On charge la bibliothèque jQuery. Ici, je la prends depuis le CDN google
+       mais si vous l'avez en local, changez simplement l'adresse. #}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    {# Voici le script en question : #}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var $container = $('div#propositions');
+            var $menu = $('ul#add-menu');
+
+            var $addLink = $('<button href="#" class="btn btn-info btn-block">Ajouter une réponse</button>');
+            $menu.prepend($addLink);
+
+            $addLink.click(function (e) {
+                addMenu($menu, $container);
+                e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+                return false;
+            });
+
+            // On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
+            var index = $container.find(':input').length;
+
+            // On ajoute un premier champ automatiquement s'il n'en existe pas déjà un (cas d'une nouvelle annonce par exemple).
+            if (index == 0) {
+                addMenu($menu, $container);
+            } else {
+                // Pour chaque catégorie déjà existante, on ajoute un lien de suppression
+                $container.children('div').each(function () {
+                    addDeleteLink($(this));
+                });
+            }
+
+            function addMenu($menu, $container) {
+                var $prototype = $($menu.attr('data-prototype').replace(/__index__/g, +(index + 1)).replace(/__name__/g, +(index + 1)).replace(/__active__/g, +(index == 0) ? "active" : ""));
+                $menu.append($prototype);
+                addCategory($container, $prototype)
+            }
+
+            function addCategory($container, $p) {
+                var $prototype = $($container.attr('data-prototype').replace(/__index__/g, +(index + 1)).replace(/__name__/g, +(index + 1)).replace(/__active__/g, +(index == 0) ? "active" : ""));
+                addDeleteLink($prototype, $p);
+                $container.append($prototype);
+                index++;
+            }
+
+            function addDeleteLink($prototype, $p) {
+                $deleteLink = $('<button href="#" class="btn btn-danger btn-block">Supprimer</button>');
+                $prototype.append($deleteLink);
+                
+                $deleteLink.click(function (e) {
+                    $prototype.remove();
+                    $p.remove();
+                    e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+                    return false;
+                });
+            }
+        });
+    </script>
+
+{% endblock %}
+{% block body %}
+
+    <div class="small-header transition animated fadeIn">
+        <div class="hpanel">
+            <div class="panel-body">
+                <h2 class="font-light m-b-xs">
+                    Ajout des réponses
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="content ">
+        <div class="panel-body">
+
+            <div class="col-lg-12">
+                <div class="hpanel">
+                        {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+                        <div class="panel-body">
+                                <h3>Question</h3>
+                                <div class="form-group">
+                                    <label class="col-lg-2 control-label">{{ form_label(form.question.wording) }}</label>
+                                    <div class="col-lg-10">
+                                        {{ form_widget(form.question.wording, {'attr': {'class': 'form-control'}}) }}
+                                        <span class="help-block m-b-none">{{ form_errors(form.question.wording)|e('html_attr') }}</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-2 control-label">{{ form_label(form.question.annotation) }}</label>
+                                    <div class="col-lg-10">
+                                        {{ form_widget(form.question.annotation|e('html_attr'), {'attr': {'class': 'form-control'}}) }}
+                                        <span class="help-block m-b-none">{{ form_errors(form.question.annotation)|e('html_attr') }}</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-2 control-label">{{ form_label(form.question.order) }}</label>
+                                    <div class="col-lg-10">
+                                        {{ form_widget(form.question.order|e('html_attr'), {'attr': {'class': 'form-control'}}) }}
+                                        <span class="help-block m-b-none">{{ form_errors(form.question.order)|e('html_attr') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                    <div class="tabs-top">
+                        <ul id="add-menu"
+                            data-prototype="<li class='__active__'><a data-toggle='tab' href='#tab-__index__'>#__index__</a></li>" class="nav nav-tabs">
+                        </ul>
+
+
+                        <div class="tab-content" id="propositions"
+                             data-prototype = '
+                             <div id="tab-__index__" class="tab-pane __active__">
+                                <div class="panel-body">   
+                                <h3>Réponse</h3>
+
+                                   <div class="form-group">
+                                       <label class="col-lg-2 control-label">{{ form_label(form.answers.vars.prototype.wording)|e('html_attr') }}</label>
+                                       <div class="col-lg-10">
+                                           {{ form_widget(form.answers.vars.prototype.wording|e('html_attr'), {'attr': {'class': 'form-control'}}) }}
+                                           <span class="help-block m-b-none">{{ form_errors(form.answers.vars.prototype.wording)|e('html_attr') }}</span>
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-lg-2 control-label">{{ form_label(form.answers.vars.prototype.annotation)|e('html_attr') }}</label>
+                                       <div class="col-lg-10">
+                                           {{ form_widget(form.answers.vars.prototype.annotation|e('html_attr'), {'attr': {'class': 'form-control'}}) }}
+                                           <span class="help-block m-b-none">{{ form_errors(form.answers.vars.prototype.annotation)|e('html_attr') }}</span>
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-lg-2 control-label">{{ form_label(form.answers.vars.prototype.order)|e('html_attr') }}</label>
+                                       <div class="col-lg-10">
+                                           {{ form_widget(form.answers.vars.prototype.order|e('html_attr'), {'attr': {'class': 'form-control'}}) }}
+                                           <span class="help-block m-b-none">{{ form_errors(form.answers.vars.prototype.order)|e('html_attr') }}</span>
+                                       </div>
+                                   </div> 
+                                   <div class="form-group">
+                                       {% for i in 0..(propositions|length)-1 %}
+                                           {% set nbMatch = nbMatch + 1%}
+                                           {{propositions[i].title}}
+                                                 <input type="range"
+                                                       value="0" min="0" max="10"
+                                                       data-show-value="true"
+                                                       data-highlight="true"
+                                                       name="companybundle_add_question[matchs][__name__{{nbMatch}}][weight]"
+                                                       required="required" />
+                                       {% endfor %}
+                                   </div>
+                                </div>
+                             </div>
+                             '>
+                        </div>                             
+                        <br />
+                        <button class='btn-lg btn-block btn-success top20 col-md-6' value="new" name="submit" type='submit'>Valider et Nouvelle question</button><button class='btn-lg btn-block btn-success top20 col-md-6' value="over" name="submit"  type='submit'>Valider et Clôturer le questionnaire</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+
+{% endblock %}
+
+

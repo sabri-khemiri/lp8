@@ -1,0 +1,67 @@
+{% extends "CompanyBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Index{% endblock %}
+{% block css %}
+{% endblock %}
+{% block js %}
+
+{% endblock %}
+{% block body %}
+
+    <div class="small-header transition animated fadeIn">
+        <div class="hpanel">
+            <div class="panel-body">
+                <h2 class="font-light m-b-xs">
+                    Modification des Propositions
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="content ">
+        <div class="panel-body">
+
+            <div class="col-lg-12">
+                <div class="hpanel">
+
+                    <div class="tabs-top">
+                        {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+
+                        <div class="panel-body">                     
+
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">{{ form_label(form.title) }}</label>
+                                <div class="col-lg-10">
+                                    {{ form_widget(form.title|e('html_attr'), {'attr': {'class': 'form-control'}}) }}
+                                    <span class="help-block m-b-none">{{ form_errors(form.title)|e('html_attr') }}</span>
+                                </div>
+
+                                <label class="col-lg-2 control-label">{{ form_label(form.description) }}</label>
+                                <div class="col-lg-10">
+                                    {{ form_widget(form.description|e('html_attr'), {'attr': {'class': 'form-control'}}) }}
+                                    <span class="help-block m-b-none">{{ form_errors(form.description)|e('html_attr') }}</span>
+                                </div>
+
+                                <label class="col-lg-2 control-label">{{ form_label(form.image) }}<span class="text-danger">* </span></label>
+                                <div class="col-lg-10">
+                                    {{ form_widget(form.image|e('html_attr'), {'attr': {'class': 'form-control'}}) }}
+                                    <br />
+                                    <span class=" alert-info alert-block"><span class="text-danger">* </span>Ne pas charger une nouvelle/ancienne image si aucune modification de l'image</span>
+                                </div>                
+
+                            </div>     
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                <button class='btn-lg btn-block btn-success top20' type='submit'>Valider</button>
+            </div>
+        </div>
+    </div>
+{{ form_end(form) }}
+
+{% endblock %}
+
+

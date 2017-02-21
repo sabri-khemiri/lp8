@@ -1,0 +1,57 @@
+company_homepage:
+    path:     /company/
+    defaults: { _controller: CompanyBundle:Company:homepage }
+company_survey_add:
+    path:     /company/survey/add
+    defaults: { _controller: CompanyBundle:Survey:addSurvey }
+company_survey:
+    path:     /company/survey/{id}
+    defaults: { _controller: CompanyBundle:Company:viewSurvey }
+company_survey_update:
+    path:     /company/survey/{id}/update
+    defaults: { _controller: CompanyBundle:Survey:updateSurvey }
+company_survey_send_invitation:
+    path:     /company/survey/{id}/invitation
+    defaults: { _controller: CompanyBundle:Company:sendInvitation }
+company_survey_proposition_update:
+    path:     /company/survey/{idSurvey}/proposition/update/{idProposition}
+    defaults: { _controller: CompanyBundle:Survey:updateProposition }
+company_survey_proposition_add:
+    path:     /company/survey/proposition/add/{id}
+    defaults: { _controller: CompanyBundle:Survey:addProposition }
+company_survey_question_add:
+    path:     /company/survey/question/add/{id}
+    defaults: { _controller: CompanyBundle:Survey:addQuestion }
+company_survey_answer_add:
+    path:     /company/survey/{idSurvey}/answer/add/{idQuestion}
+    defaults: { _controller: CompanyBundle:Survey:addAnswer }
+company_survey_question_update:
+    path:     /company/survey/question/update/
+    defaults: { _controller: CompanyBundle:Survey:updateQuestion }
+company_survey_match_update:
+    path:     /company/survey/match/update/
+    defaults: { _controller: CompanyBundle:Survey:updateMatch }
+company_survey_answer_update:
+    path:     /company/survey/answer/update/
+    defaults: { _controller: CompanyBundle:Survey:updateAnswer }
+
+#*******************************************************************************
+#Suppression *******************************************************************
+company_survey_delete : 
+    path:     /company/survey/{idSurvey}/delete/
+    defaults: { _controller: CompanyBundle:Survey:deleteSurvey }
+company_survey_proposition_delete : 
+    path:     /company/survey/{idSurvey}/proposition/delete/{idProposition}
+    defaults: { _controller: CompanyBundle:Survey:deleteProposition }
+company_survey_question_delete : 
+    path:     /company/survey/{idSurvey}/question/delete/{idQuestion}
+    defaults: { _controller: CompanyBundle:Survey:deleteQuestion }
+company_survey_answer_delete : 
+    path:     /company/survey/{idSurvey}/answer/delete/{idAnswer}
+    defaults: { _controller: CompanyBundle:Survey:deleteAnswer }
+#*******************************************************************************
+#Changer status du questionnaire ***********************************************
+company_survey_update_status : 
+    path:     /company/survey/{idSurvey}/update/status/{status}
+    defaults: { _controller: CompanyBundle:Survey:changeStatusSurvey }
+    

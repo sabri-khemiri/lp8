@@ -1,0 +1,102 @@
+{% extends "CompanyBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Index{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ asset('bundles/company/vendor/bootstrap-star-rating/css/star-rating.css') }}" />
+{% endblock %}
+{% block js %}
+    <script src="{{ asset('bundles/company/vendor/bootstrap-star-rating/js/star-rating.min.js') }}"></script>
+
+    <style>
+        .rating-container .rating-stars:before {
+            text-shadow: none;
+        }
+    </style>
+
+    <script>
+
+        $(function () {
+            // initialize with defaults
+            var ratingValue = $('.rating').rating('refresh', {
+                readonly: true,
+                showClear: true,
+                showCaption: false
+            }).val();
+
+        });
+
+    </script>
+
+{% endblock %}
+{% block body %}
+
+
+    <div class="small-header transition animated fadeIn">
+        <div class="hpanel">
+            <div class="panel-body">
+                <div id="hbreadcrumb" class="pull-right">
+                    <ol class="hbreadcrumb breadcrumb">
+                        <li><a href="{{path('company_homepage')}}">Accueil</a></li>
+                        <li class="active">
+                            <span>Mes Questionnaires </span>
+                        </li>
+                    </ol>
+                </div>
+                <h2 class="font-light m-b-xs">
+                    Mes questionnaires
+                </h2>
+                <small>Gestionaire des questionnaires</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="content animated">
+        <div class="hpanel forum-box">
+            {% for survey in surveys %}
+                <div class="panel-body ">
+                    <div class="row">
+                        <div class="col-md-7 col-sm-9 forum-heading">                            
+                            <span class="progress m-t-xs full progress-striped active">
+                                {% if survey.status < 4 %}
+                                    <span class="label label-warning pull-left">En Construction</span>
+                                {% elseif survey.status == 4 %}
+                                    <span class="label label-success pull-left">En Cours</span>
+                                {% elseif survey.status == 5 %}
+                                    <span class="label label-info pull-left">En Pause</span>
+                                {% elseif survey.status == 6 %}
+                                    <span class="label label-danger pull-left">Clôt</span>
+                                {% endif %}
+                            </span>
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            <h4>{{ survey.title|capitalize  }}</h4>
+                            <div class="desc">{{ survey.annotation|striptags  }}</div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12 text-center">
+                            <input  class="rating " data-min="0" data-max="5" data-step="0.5" value="{{ survey.rating  }}" data-size="xs" data-show-clear="false" disable style="pointer-events: none;cursor: default;">
+                        </div>
+                        <div class="col-md-1 col-sm-4 col-xs-4 forum-info text-center">
+                            <span class="number"><span class="number text-success font-extra-bold">{{survey.surveyedNumber}}</span></span>
+                            <small>Sondées</small>
+                        </div>
+                        <div class="col-md-1 col-sm-4 col-xs-4 forum-info text-center">
+                            <a href="{{ path('company_survey', {'id': survey.id}) }}">
+                                <span class="number"><span class="number  "> <i class="fa fa-eye  text-success"></i></span></span>
+                                <small>Voir</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>  
+            {% endfor %}
+        </div>
+        <a href="{{ path('company_survey_add')}}"><button type="button" class="btn btn-block btn-large  btn-primary">Nouveau questionnaire</button></a>
+
+    </div>
+
+{% endblock %}

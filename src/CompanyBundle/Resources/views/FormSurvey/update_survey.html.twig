@@ -1,0 +1,78 @@
+{% extends "CompanyBundle::layout.html.twig" %}
+
+{% block title %}{{ parent() }} - Index{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{{ asset('bundles/company/vendor/summernote/dist/summernote.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/company/vendor/summernote/dist/summernote-bs3.css') }}" />
+{% endblock %}
+{% block js %}
+    <script src="{{ asset('bundles/company/vendor/summernote/dist/summernote.min.js') }}"></script>
+    <script>
+
+    $(function () {
+        $('.summernote').summernote({
+            toolbar: [
+                ['headline', ['style']],
+                ['style', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'strikethrough', 'clear']],
+                ['alignment', ['ul', 'ol', 'paragraph', 'lineheight']],
+            ]
+        });
+        
+    });
+    
+    function sub(){
+        $(".texta").val($(".summernote").code());
+    }
+
+</script>
+
+{% endblock %}
+{% block body %}
+    <div class="small-header transition animated fadeIn">
+        <div class="hpanel">
+            <div class="panel-body">
+                <div id="hbreadcrumb" class="pull-right">
+                    <ol class="hbreadcrumb breadcrumb">
+                        <li><a href="index.html">Accueil</a></li>
+                        <li class="active">
+                            <span>Modifier questionnaire </span>
+                        </li>
+                    </ol>
+                </div>
+                <h2 class="font-light m-b-xs">
+                    Modifier questionnaire
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="content ">
+        <div class="panel-body bg-white">
+            {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+            <div class="form-group">
+                <label class="col-sm-12 ">{{ form_label(form.title, "Titre du questionnaire") }}<span class="text-danger">*</span></label>
+
+                <div class="col-sm-12">
+                    {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                    <span class="help-block m-b-none">{{ form_errors(form.title) }}</span>
+                </div>
+               
+                <label class="col-sm-12 ">{{ form_label(form.annotation) }}</label>
+                <div class="col-sm-12">
+                    <div class="summernote">{{survey.annotation|raw}}</div>
+                    {{ form_widget(form.annotation, {'attr': {'class': 'form-control texta hide'}}) }}
+                    <span class="help-block m-b-none">{{ form_errors(form.annotation) }}</span>
+                </div>
+
+                    <label class="col-sm-12 ">{{ form_label(form.password, "Mot de passe") }} <span class="text-warning small">(Laissez vide si pas de modification)</span></label>
+
+                <div class="col-sm-12">
+                    {{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
+                    <span class="help-block m-b-none">{{ form_errors(form.password) }}</span>
+                </div>
+                <button type="submit" name="submit" class="btn btn-warning btn-lg  col-md-6 btn-block" onClick="sub()" value="average">Select Moyenne</button>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

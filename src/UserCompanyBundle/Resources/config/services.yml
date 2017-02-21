@@ -1,0 +1,4 @@
+services:
+#    user_company.example:
+#        class: UserCompanyBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

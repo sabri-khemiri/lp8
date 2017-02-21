@@ -1,0 +1,19 @@
+customer_survey_end:
+    path:     /survey/end
+    defaults: { _controller: CustomerBundle:Customer:endSurvey }
+customer_survey_login:
+    path:     /survey/{idSurvey}
+    defaults: { _controller: CustomerBundle:Customer:homepageSurvey }
+customer_survey_form:
+    path:     /survey/{idSurvey}/form
+    defaults: { _controller: CustomerBundle:Customer:formSurvey }
+customer_survey_proposition:
+    path:     /survey/{idSurvey}/proposition
+    defaults: { _controller: CustomerBundle:Customer:propositionSurvey }
+customer_survey_proposition_select:
+    path:     /survey/{idSurvey}/proposition/{idProposition}
+    defaults: { _controller: CustomerBundle:Customer:selectPropositionSurvey }
+customer_survey_rating:
+    path:     /survey/{idSurvey}/rating
+    defaults: { _controller: CustomerBundle:Customer:ratingSurvey }
+
